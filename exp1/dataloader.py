@@ -18,10 +18,3 @@ def load() -> None:
     city_y = np.array(df[2][0:len(df)-1])
     city_location = list(zip(city_x, city_y))
     print(city_location)
-        
-        
-    
-
-    
-
-
