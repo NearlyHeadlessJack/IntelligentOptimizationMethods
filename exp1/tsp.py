@@ -47,10 +47,11 @@ def search(mov,epochs,alpha,tlist,isBan=False):
         result = cal(mov)
         i = 0
         cache = Cache()
+        total_mov += 1
         while result>=now_result:
             mov = last_mov
             i +=1
-            total_mov += 1
+            
             # print("in epoch" + str(epoch))
             
             a,b = randmov()
@@ -61,13 +62,22 @@ def search(mov,epochs,alpha,tlist,isBan=False):
             result = cal(mov) + alpha*plist.map[1][plist.iter({a,b},isBan)]
             cache.add(a,b,result)
             # print("result:" + str(result))
-            if i>8000:
+            if i>800:
                 mov = last_mov
                 result,a,b=cache.minimum()
                 c = mov[b-1]
                 mov[b-1] = mov[a-1]
                 mov[a-1] = c
                 break
+            if tlist.search({a,b}):
+                if result<optimum_dis:
+                    optimum_dis = cal(mov)
+                    tlist.iter({a,b})
+                else:
+                    
+                    
+            
+            
         if not tlist.search({a,b}):
             print(tlist.list)
             tlist.iter({a,b})
