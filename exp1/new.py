@@ -51,7 +51,7 @@ class Taboo_search:
         cities = copy.deepcopy(self.city_list)
         cities.remove(cities[0])
         route = copy.deepcopy(cities)
-        random.shuffle(route)
+        # random.shuffle(route)
         # route = [[6, (1030.0, 2070.0)], [5, (750.0, 2030.0)], [29, (360.0, 1980.0)], [3, (40.0, 2090.0)],
         #          [26, (490.0, 2130.0)], [9, (790.0, 2260.0)], [12, (1170.0, 2300.0)], [28, (1260.0, 1910.0)],
         #          [8, (1490.0, 1630.0)], [27, (1460.0, 1420.0)], [24, (1260.0, 1500.0)], [13, (970.0, 1340.0)],
@@ -168,8 +168,8 @@ class Taboo_search:
         route = copy.deepcopy(self.min_route)
         for i in range(self.iteration_count):
             route = self.single_search(route)
-            if self.route_cost(route)<38000:
-                break
+            # if self.route_cost(route)<38000:
+            #     break
         new_route = [self.city_list[0]]
         new_route.extend(self.min_route)
         new_route.append(self.city_list[0])  # 前后插入首个城市信息
@@ -210,21 +210,26 @@ if __name__ == "__main__":
         lis = [i+1,tupl]
         city_list.append(lis)
            
-    
-    
-    ts_random = Taboo_search(city_list=city_list, candidate_count=80, taboo_list_length=20, iteration_count=1000)
+    dododo = []
+    for i in range(44):
+        print("============================")
+        ts_random = Taboo_search(city_list=city_list, candidate_count=80, taboo_list_length=40, iteration_count=300)
     # ts_greedy = Taboo_search(city_list, candidate_count=80, taboo_list_length=100, iteration_count=1000,
                             #  is_random=False)
-    start_time1 = datetime.datetime.now()
-    route_random, cost_random = ts_random.taboo_search()
-    end_time1 = datetime.datetime.now()
-    duration1 = (end_time1 - start_time1).seconds
+        start_time1 = datetime.datetime.now()
+        route_random, cost_random = ts_random.taboo_search()
+        end_time1 = datetime.datetime.now()
+        duration1 = (end_time1 - start_time1).seconds
     # route_greedy, cost_greedy = ts_greedy.taboo_search()
-    end_time2 = datetime.datetime.now()
-    duration2 = (end_time2 - end_time1).seconds
-    draw_line_pic(route_random, cost_random, duration1, "random")
-    print("最优路径：", route_random)
-    print("最短距离：", cost_random)
-    print("随机TS耗时：",end_time1-start_time1)
+        end_time2 = datetime.datetime.now()
+        duration2 = (end_time2 - end_time1).seconds
+    # draw_line_pic(route_random, cost_random, duration1, "random")
+        print("最优路径：", route_random)
+        dododo.append(cost_random)
+        print("最短距离：", cost_random)
+        print("随机TS耗时：",end_time1-start_time1)
+        print(i)
+        print("==============================")
     # draw_line_pic(route_greedy, cost_greedy, duration2, "greedy")
 
+    print(dododo)

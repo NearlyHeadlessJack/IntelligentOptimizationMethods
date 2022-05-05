@@ -159,11 +159,21 @@ if __name__ == "__main__":
     # last,t = Search(move,epo,a,ts,ss,iB)
     # s.save(ts,iB,last,t)
     # move = init()
-    iB = False
+    for i in range(50):
+        move = init() # 随机生成初始路径
+        iB = False    #不禁止频数表的使用
+        search = Search(move,epo,a,ts,ss,iB)    
+        s.save(ts,iB,search.r_now_result,search.r_total)
+        del search
 
-    search = Search(move,epo,a,ts,ss,iB)    
-    s.save(ts,iB,search.r_now_result,search.r_total)
-    del search
+        iB = True     #禁止频数表的使用
+        search = Search(move,epo,a,ts,ss,iB)    
+        s.save(ts,iB,search.r_now_result,search.r_total)
+        del search
+        
+        
+        
+        
         
     # iB = False
         
