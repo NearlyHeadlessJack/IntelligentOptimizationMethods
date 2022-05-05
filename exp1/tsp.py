@@ -61,17 +61,21 @@ class Search:
         t = TList(tlist_size)
         total = 0
         epoch = 0
-        
+        self.subset = Subset(mov,sub_size)
+        self.subset.shuffle(mov,sub_size)
+        print(self.subset.set[0])
         while epoch<epochs:
+            total += 1
             epoch += 1
-            self.subset = Subset(mov,sub_size)
+            # if epoch == 1:
+            #     self.subset.shuffle(mov,sub_size)
             i = 0
+            
             for i in range(0,sub_size):
                 p.add(self.subset.set[0][i])
-            
-                total += 1
+                self.subset.iter(i)
                 result = cal(self.subset.set[1][i]) + alpha * p.iter(self.subset.set[0][i],isBan)
-                self.subset.set[2].append(result)
+                self.subset.set[2][i] = result
             distances = self.subset.set[2]
             distances = np.array(distances)
 
@@ -93,6 +97,8 @@ class Search:
                 _dis = self.subset.set[2][ordered_index]
                 isInTlist = t.search(_set)
                 print(isInTlist)
+                print('j:')
+                print(j)
                 
                     
                 if not isInTlist:
@@ -114,9 +120,9 @@ class Search:
                     else:
                         continue
             print(t.list)
-            self.subset.clean()
+            # self.subset.clean()
             # del ssubset
-            if now_result<150000:
+            if total>100:
                 print('break')
                 print(now_result)
                 self.r_now_result = optimum_result
@@ -139,10 +145,11 @@ class Search:
 if __name__ == "__main__":
     
     a = 0.001
-    epo = 200
+    epo = 10000
     ts = 3
-    ss =50
-    iB = True
+    
+    ss = 15
+    # iB = True
     d = Dataloder()
     s = SaveData()
     
@@ -152,7 +159,7 @@ if __name__ == "__main__":
     # last,t = Search(move,epo,a,ts,ss,iB)
     # s.save(ts,iB,last,t)
     # move = init()
-    # iB = False
+    iB = False
 
     search = Search(move,epo,a,ts,ss,iB)    
     s.save(ts,iB,search.r_now_result,search.r_total)
