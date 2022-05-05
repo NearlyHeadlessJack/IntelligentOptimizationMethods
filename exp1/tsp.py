@@ -9,8 +9,11 @@ TSP Benchmark问题求解
 '''
 from cgitb import reset
 from dataloader import Dataloder
-from lists import TList, PList,Cache
+from lists import TList, PList,Cache,Subset
 import random,math
+from savedata import SaveData
+import numpy as np
+import time
 
 
 def init():
@@ -36,207 +39,130 @@ def randmov():
         b = random.randint(1,100)
     return a,b
 
-def search(mov,epochs,alpha,tlist,isBan=False):
+def mov(mov,move):
+    mov = list(mov)
+    c = move[mov[0]-1]
+    move[mov[0]-1] = move[mov[1]-1]
+    move[mov[1]-1] = c
+    return move
     
-    optimum_dis = cal(mov)
-    total_mov = 0
+
+class Search:
     
-    for epoch in range(1,epochs):
-        last_mov = mov
+    r_now_result = 0
+    r_total = 0
+    
+    subset =[]
+    def __init__(self,movee,epochs,alpha,tlist_size=20,sub_size=100,isBan=False):
+        mov = movee
+        optimum_result = cal(mov)
         now_result = cal(mov)
-        result = cal(mov)
-        i = 0
-        cache = Cache()
-        total_mov += 1
-        while result>=now_result:
-            mov = last_mov
-            i +=1
+        p = PList()
+        t = TList(tlist_size)
+        total = 0
+        epoch = 0
+        
+        while epoch<epochs:
+            epoch += 1
+            self.subset = Subset(mov,sub_size)
+            i = 0
+            for i in range(0,sub_size):
+                p.add(self.subset.set[0][i])
             
-            # print("in epoch" + str(epoch))
-            
-            a,b = randmov()
-            plist.add({a,b})
-            c = mov[b-1]
-            mov[b-1] = mov[a-1]
-            mov[a-1] = c
-            result = cal(mov) + alpha*plist.map[1][plist.iter({a,b},isBan)]
-            cache.add(a,b,result)
-            # print("result:" + str(result))
-            if i>800:
-                mov = last_mov
-                result,a,b=cache.minimum()
-                c = mov[b-1]
-                mov[b-1] = mov[a-1]
-                mov[a-1] = c
-                break
-            if tlist.search({a,b}):
-                if result<optimum_dis:
-                    optimum_dis = cal(mov)
-                    tlist.iter({a,b})
+                total += 1
+                result = cal(self.subset.set[1][i]) + alpha * p.iter(self.subset.set[0][i],isBan)
+                self.subset.set[2].append(result)
+            distances = self.subset.set[2]
+            distances = np.array(distances)
+
+            index_of_order = np.argsort(distances)
+            # print(index_of_order)
+            j = 0 
+            _dis = self.subset.set[2][index_of_order[0]]
+            # if _dis>now_result:
+            #     self.r_now_result = optimum_result
+            #     self.r_total = total
+                # return
+            for j in range(0,sub_size):
+
+                # print(epoch)
+                # print(subset.set)
+                ordered_index = index_of_order[j]
+                _set = self.subset.set[0][ordered_index]
+                _move = self.subset.set[1][ordered_index]
+                _dis = self.subset.set[2][ordered_index]
+                isInTlist = t.search(_set)
+                print(isInTlist)
+                
+                    
+                if not isInTlist:
+                
+                    t.iter(_set)
+                    now_result = _dis
+                    if now_result<optimum_result:
+                        optimum_result = now_result
+                    mov = _move
+                    break
                 else:
                     
-                    
-            
-            
-        if not tlist.search({a,b}):
-            print(tlist.list)
-            tlist.iter({a,b})
-            if result<optimum_dis:
-                # print("change")
-                optimum_dis = cal(mov)
-        else:
-            print("exist")
-            if result<optimum_dis:
+                    if _dis<optimum_result:
+                        t.iter(_set)
+                        now_result = _dis
+                        optimum_result = now_result
+                        mov = _move
+                        break
+                    else:
+                        continue
+            print(t.list)
+            self.subset.clean()
+            # del ssubset
+            if now_result<150000:
+                print('break')
+                print(now_result)
+                self.r_now_result = optimum_result
+                self.r_total = total
+                return
                 
-                optimum_dis = cal(mov)
-                tlist.iter({a,b})
-            else:
-                mov = last_mov
-    best_mov = mov
-    best_result = cal(best_mov)
+        del p
+        del t
+        # print(mov)
+        print("\n")
+        self.r_now_result = optimum_result
+        self.r_total = total
+        return
+    def __del__(self):
+        return
+
+            
         
-    return best_result,total_mov
-                
-    
-    
-def exp1():
-    exp_result = []
-    exp_tsize = []
-    exp_isBan = []
-    exp_optimum = []
-    exp_total = []
-    for i in range(3,60):
-        tlist.change_size(i)
-        exp_tsize.append(i)
-        exp_tsize.append(i)
-        result,total = search(move,10,0.001,False)
-        exp_isBan.append(0)
-        exp_optimum.append(result)
-        exp_total.append(total)
-        tlist.change_size(i)
-        result,total = search(move,10,0.001,True)
-        exp_isBan.append(1)
-        exp_optimum.append(result)
-        exp_total.append(total)
-        plist = PList()
-    exp_result.append(exp_tsize)
-    exp_result.append(exp_isBan)
-    exp_result.append(exp_optimum)
-    exp_result.append(exp_total)
-    
-    print(exp_result)
-    with open(file = 'exp1.txt',mode = 'w+')as f:
-        for exp in exp_result[0]:
-            f.writelines(str(exp)+'\n')
-        
-    with open(file = 'exp2.txt',mode = 'w+')as f:
-        for exp in exp_result[1]:
-            f.writelines(str(exp)+'\n')
-    with open(file = 'exp3.txt',mode = 'w+')as f:
-        for exp in exp_result[2]:
-            f.writelines(str(exp)+'\n')
-    with open(file = 'exp4.txt',mode = 'w+')as f:
-        for exp in exp_result[3]:
-            f.writelines(str(exp)+'\n')
-    
-    
-    
-def exp2():
-    exp_result = []
-    exp_tsize = []
-    exp_isBan = []
-    exp_optimum = []
-    exp_total = []
-    
-    for i in range(1,100):
-        tlist = TList(60)
-        plist = PList()
-        move = init()
-        exp_tsize.append(60)
-        exp_tsize.append(60)
-        result,total = search(move,10,0.001,False)
-        exp_isBan.append(0)
-        exp_optimum.append(result)
-        exp_total.append(total)
-        tlist = TList(60)
-        plist = PList()
-        result,total = search(move,10,0.001,True)
-        exp_isBan.append(1)
-        exp_optimum.append(result)
-        exp_total.append(total)
-        
-    exp_result.append(exp_tsize)
-    exp_result.append(exp_isBan)
-    exp_result.append(exp_optimum)
-    exp_result.append(exp_total)
-    
-    print(exp_result)
-    with open(file = 'exp1.txt',mode = 'w+')as f:
-        for exp in exp_result[0]:
-            f.writelines(str(exp)+'\n')
-        
-    with open(file = 'exp2.txt',mode = 'w+')as f:
-        for exp in exp_result[1]:
-            f.writelines(str(exp)+'\n')
-    with open(file = 'exp3.txt',mode = 'w+')as f:
-        for exp in exp_result[2]:
-            f.writelines(str(exp)+'\n')
-    with open(file = 'exp4.txt',mode = 'w+')as f:
-        for exp in exp_result[3]:
-            f.writelines(str(exp)+'\n')
     
 if __name__ == "__main__":
     
-    
+    a = 0.001
+    epo = 200
+    ts = 3
+    ss =50
+    iB = True
     d = Dataloder()
-    # tlist = TList(20)
-    plist = PList()
-    move = init()
-    move =[49, 65, 63, 41, 13, 96, 6, 11, 59, 27, 14, 100, 44, 42, 54, 98, 73, 84, 75, 36, 34, 99, 58, 30, 82, 21, 80, 53, 31, 71, 57, 56, 38, 43, 94, 50, 78, 19, 66, 28, 61, 22, 2, 46, 45, 32, 85, 83, 72, 23, 95, 90, 81, 68, 67, 1, 70, 48, 87, 93, 40, 91, 29, 24, 17, 8, 3, 18, 15, 74, 69, 64, 9, 26, 77, 51, 10, 79, 60, 88, 47, 5, 89, 20, 25, 35, 7, 76, 12, 97, 52, 55, 33, 39, 86, 16, 37, 4, 62, 92]
-    print(move)
-    exp_result = []
-    exp_tsize = []
-    exp_isBan = []
-    exp_optimum = []
-    exp_total = []
-    for i in range(1,11):
-        move =[49, 65, 63, 41, 13, 96, 6, 11, 59, 27, 14, 100, 44, 42, 54, 98, 73, 84, 75, 36, 34, 99, 58, 30, 82, 21, 80, 53, 31, 71, 57, 56, 38, 43, 94, 50, 78, 19, 66, 28, 61, 22, 2, 46, 45, 32, 85, 83, 72, 23, 95, 90, 81, 68, 67, 1, 70, 48, 87, 93, 40, 91, 29, 24, 17, 8, 3, 18, 15, 74, 69, 64, 9, 26, 77, 51, 10, 79, 60, 88, 47, 5, 89, 20, 25, 35, 7, 76, 12, 97, 52, 55, 33, 39, 86, 16, 37, 4, 62, 92]
-        optimum_dis = 1.0
-        tlist3 = TList(4000)
-        plist = PList()
-        exp_tsize.append(4000)
-        result,total = search(move,100,0.001,tlist3,True)
-        exp_isBan.append(1)
-        exp_optimum.append(result)
-        exp_total.append(total)
-        
+    s = SaveData()
+    
+    # move = init()
+    move =[49, 65, 63, 41, 13, 96, 6, 11, 59, 27, 14,100, 44, 42, 54, 98, 73, 84, 75, 36, 34, 99, 58, 30, 82, 21, 80, 53, 31, 71, 57, 56, 38, 43, 94, 50, 78, 19, 66, 28, 61,22, 2, 46, 45, 32, 85, 83, 72, 23, 95, 90, 81, 68, 67, 1,70, 48, 87, 93, 40, 91, 29, 24, 17, 8, 3, 18, 15, 74, 69,64, 9, 26, 77, 51, 10, 79, 60, 88, 47, 5, 89, 20, 25, 35,7, 76, 12, 97, 52, 55, 33, 39, 86, 16, 37, 4, 62, 92]
+    
+    # last,t = Search(move,epo,a,ts,ss,iB)
+    # s.save(ts,iB,last,t)
+    # move = init()
+    # iB = False
 
+    search = Search(move,epo,a,ts,ss,iB)    
+    s.save(ts,iB,search.r_now_result,search.r_total)
+    del search
         
-    
-    exp_result.append(exp_tsize)
-    exp_result.append(exp_isBan)
-    exp_result.append(exp_optimum)
-    exp_result.append(exp_total)
-    
-    print(exp_result)
-    with open(file = 'exp1.txt',mode = 'w+')as f:
-        for exp in exp_result[0]:
-            f.writelines(str(exp)+'\n')
+    # iB = False
         
-    with open(file = 'exp2.txt',mode = 'w+')as f:
-        for exp in exp_result[1]:
-            f.writelines(str(exp)+'\n')
-    with open(file = 'exp3.txt',mode = 'w+')as f:
-        for exp in exp_result[2]:
-            f.writelines(str(exp)+'\n')
-    with open(file = 'exp4.txt',mode = 'w+')as f:
-        for exp in exp_result[3]:
-            f.writelines(str(exp)+'\n')
-    
-    
-    
-    
+    # search1 = Search(move,epo,a,ts,ss,iB)    
+    # s.save(ts,iB,search1.r_now_result,search1.r_total)
+    # del search1
 
-    
-    
-    
+
+    s.write_data(isShow=True)
