@@ -122,10 +122,10 @@ class Search:
             print(t.list)
             # self.subset.clean()
             # del ssubset
-            if total>100:
+            if total>200:
                 print('break')
                 print(now_result)
-                self.r_now_result = optimum_result
+                self.r_now_result = now_result
                 self.r_total = total
                 return
                 
@@ -146,9 +146,9 @@ if __name__ == "__main__":
     
     a = 0.001
     epo = 10000
-    ts = 3
+    ts = 200
     
-    ss = 15
+    ss = 400
     # iB = True
     d = Dataloder()
     s = SaveData()
