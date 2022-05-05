@@ -146,7 +146,7 @@ if __name__ == "__main__":
     
     a = 0.001
     epo = 10000
-    ts = 200
+    ts = 300
     
     ss = 400
     # iB = True
