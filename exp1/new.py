@@ -168,6 +168,8 @@ class Taboo_search:
         route = copy.deepcopy(self.min_route)
         for i in range(self.iteration_count):
             route = self.single_search(route)
+            if self.route_cost(route)<38000:
+                break
         new_route = [self.city_list[0]]
         new_route.extend(self.min_route)
         new_route.append(self.city_list[0])  # 前后插入首个城市信息
@@ -210,19 +212,19 @@ if __name__ == "__main__":
            
     
     
-    ts_random = Taboo_search(city_list=city_list, candidate_count=40, taboo_list_length=3, iteration_count=4000)
-    ts_greedy = Taboo_search(city_list, candidate_count=40, taboo_list_length=3, iteration_count=4000,
-                             is_random=False)
+    ts_random = Taboo_search(city_list=city_list, candidate_count=80, taboo_list_length=20, iteration_count=1000)
+    # ts_greedy = Taboo_search(city_list, candidate_count=80, taboo_list_length=100, iteration_count=1000,
+                            #  is_random=False)
     start_time1 = datetime.datetime.now()
     route_random, cost_random = ts_random.taboo_search()
     end_time1 = datetime.datetime.now()
     duration1 = (end_time1 - start_time1).seconds
-    route_greedy, cost_greedy = ts_greedy.taboo_search()
+    # route_greedy, cost_greedy = ts_greedy.taboo_search()
     end_time2 = datetime.datetime.now()
     duration2 = (end_time2 - end_time1).seconds
     draw_line_pic(route_random, cost_random, duration1, "random")
     print("最优路径：", route_random)
     print("最短距离：", cost_random)
     print("随机TS耗时：",end_time1-start_time1)
-    draw_line_pic(route_greedy, cost_greedy, duration2, "greedy")
+    # draw_line_pic(route_greedy, cost_greedy, duration2, "greedy")
 
