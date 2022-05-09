@@ -213,7 +213,7 @@ if __name__ == "__main__":
     dododo = []
     for i in range(2):
         print("============================")
-        ts_random = Taboo_search(city_list=city_list, candidate_count=800, taboo_list_length=40, iteration_count=300)
+        ts_random = Taboo_search(city_list=city_list, candidate_count=80, taboo_list_length=30, iteration_count=3000)
     # ts_greedy = Taboo_search(city_list, candidate_count=80, taboo_list_length=100, iteration_count=1000,
                             #  is_random=False)
         start_time1 = datetime.datetime.now()
