@@ -22,7 +22,7 @@ if __name__ == "__main__":
     save = SaveData()
     s = Search(save, init_move, alpha=0.001 , subset_size=60, epochs=2000, tabu_size=30, is_show=True,
                is_ban_plist=True)
-    for i in range(20):
+    for i in range(2):
         s.exp()
     save.write_data(True)
 

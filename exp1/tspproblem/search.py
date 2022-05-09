@@ -76,7 +76,7 @@ class Search:
             random_subsets.append(route_)
             distance = self.distance_calculation(route_)
             subsets_distance.append(
-                distance + self.alpha * distance * self.p_list.iter({mov1, mov2}))
+                distance + self.alpha * distance * self.p_list.iter({mov1, mov2},self.is_ban_plist))
 
         random_subsets = np.array(random_subsets)
         subsets_distance = np.array(subsets_distance)
