@@ -17,11 +17,9 @@ class Data:
         self.count = np.arange(100,0,-1)
         self.best_result = dot(self.product,self.count)
         self.now_result = dot(self.product,self.count)
-
-        
         return
     
-    # calculate = lambda x:dot(x,np.arange(100,0,-1))
+
     def calculate(self,order):
         order = dot(order,self.count)
         return order
