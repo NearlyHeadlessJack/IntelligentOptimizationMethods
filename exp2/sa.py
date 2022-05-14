@@ -11,7 +11,7 @@ from search import Search
 
 def main():
     search = Search(temp0=300,temp=400,r=0.98,deltaT=4,isDelta=True,inner_count=5)
-    search.search()
+    search.search(temp0=300,temp=4000,r=0.98,deltaT=4,isDelta=True,inner_count=50)
 
     
     
