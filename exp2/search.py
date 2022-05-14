@@ -38,9 +38,7 @@ class Search:
     def cal_and_decide(self,delta):
         exponent = -1.0 * (delta/self.temp)
         bolzman = np.exp(exponent)
-        ksai = np.random.normal(loc=0.5,scale=1.0)
-        while ksai>=1 or ksai<=0:
-            ksai = np.random.normal(loc=0.5,scale=1.0)
+        ksai = np.random.uniform(low=0.0, high=1.0)
         if bolzman>ksai:
             return True
         else:
@@ -64,10 +62,20 @@ class Search:
             
     
     
-    def search(self):
-        # print(self.temp)
-        # print(self.temp0)
-        
+    def search(self,temp0=300,temp=1000,r=0.97,deltaT=10,isDelta=True,inner_count=3):
+        # 初始温度
+        self.temp = temp
+        # 温度阈值
+        self.temp0 = temp0
+        # 降温系数
+        self.r = r
+        # 降温差值
+        self.deltaT = deltaT
+        # 使用哪种降温方式
+        self.isDelta = isDelta
+        # 内循环次数
+        self.inner_count = inner_count
+
         while not self.isTempDone():
             for i in range(self.inner_count):
                 self.search_once()
