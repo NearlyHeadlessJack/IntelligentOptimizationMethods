@@ -89,31 +89,65 @@ class Search:
         return self.data.best_result
         
         
-    def exp(self):
+    def exp1(self):
         save = SaveData()
         temp01 = 300
-        temp1 = 1000
+        temp1 = 800
         deltaT1 = 10
-        inner_count1 = 3
+        inner_count1 = 5
         
         temp02 = 300
         temp2 = 800
         deltaT2 = 10
-        inner_count2 = 3
+        inner_count2 = 20
         
         temp03 = 300
-        temp3 = 600
+        temp3 = 800
         deltaT3 = 10
-        inner_count3 = 3
+        inner_count3 = 80
         
         temp04 = 300
-        temp4 = 400
+        temp4 = 800
         deltaT4 = 10
-        inner_count4 = 3
+        inner_count4 = 200
+        
+        for i in range(500):
+            self.data = Data()
+            best = self.search(temp0=temp01,temp=temp1,r=0.97,deltaT=deltaT1,isDelta=True,inner_count=inner_count1)
+            save.save(i,temp01,temp1,deltaT1,inner_count1,best)
+            best = self.search(temp0=temp02,temp=temp2,r=0.97,deltaT=deltaT2,isDelta=True,inner_count=inner_count2)
+            save.save(i,temp02,temp2,deltaT2,inner_count2,best)
+            best = self.search(temp0=temp03,temp=temp3,r=0.97,deltaT=deltaT3,isDelta=True,inner_count=inner_count3)
+            save.save(i,temp03,temp3,deltaT3,inner_count3,best)
+            best = self.search(temp0=temp04,temp=temp4,r=0.97,deltaT=deltaT4,isDelta=True,inner_count=inner_count4)
+            save.save(i,temp04,temp4,deltaT4,inner_count4,best)
+            del self.data
+            
+            
+        save.write_data()
         
         
+    def exp2(self):
+        save = SaveData()
+        temp01 = 300
+        temp1 = 400
+        deltaT1 = 3
+        inner_count1 = 5
         
+        temp02 = 300
+        temp2 = 600
+        deltaT2 = 3
+        inner_count2 = 20
         
+        temp03 = 300
+        temp3 = 800
+        deltaT3 = 3
+        inner_count3 = 80
+        
+        temp04 = 300
+        temp4 = 1000
+        deltaT4 = 3
+        inner_count4 = 200
         
         for i in range(500):
             self.data = Data()
