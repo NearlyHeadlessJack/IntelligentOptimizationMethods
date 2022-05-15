@@ -94,8 +94,7 @@ class Search:
                 self.search_once()
             # 降温
             self.decrease_temp()
-        # print(self.data.best)
-        # print(self.data.best_result)
+
         return self.data.best_result
         
     # 实验用 固定降温 变化内循环次数
