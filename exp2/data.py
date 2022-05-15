@@ -19,6 +19,14 @@ class Data:
         self.now_result = dot(self.product,self.count)
         return
     
+    def reset(self):
+        self.best = copy.deepcopy(self.product)
+        self.now = copy.deepcopy(self.product)
+        self.temp = copy.deepcopy(self.product)
+        self.count = np.arange(100,0,-1)
+        self.best_result = dot(self.product,self.count)
+        self.now_result = dot(self.product,self.count)
+        
 
     def calculate(self,order):
         order = dot(order,self.count)

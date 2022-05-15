@@ -1,5 +1,6 @@
 import numpy as np
 from data import Data
+from savedata import SaveData
 
 """
 搜索算法
@@ -18,6 +19,8 @@ class Search:
         # 使用哪种降温方式
         self.isDelta = isDelta
         self.data = Data()
+        # print(self.data.now)
+        # print(self.data.now_result)
         self.inner_count = inner_count
         
     
@@ -63,6 +66,7 @@ class Search:
     
     
     def search(self,temp0=300,temp=1000,r=0.97,deltaT=10,isDelta=True,inner_count=3):
+        self.data.reset()
         # 初始温度
         self.temp = temp
         # 温度阈值
@@ -80,8 +84,53 @@ class Search:
             for i in range(self.inner_count):
                 self.search_once()
             self.decrease_temp()
-        print(self.data.best)
-        print(self.data.best_result)
+        # print(self.data.best)
+        # print(self.data.best_result)
+        return self.data.best_result
+        
+        
+    def exp(self):
+        save = SaveData()
+        temp01 = 300
+        temp1 = 1000
+        deltaT1 = 10
+        inner_count1 = 3
+        
+        temp02 = 300
+        temp2 = 800
+        deltaT2 = 10
+        inner_count2 = 3
+        
+        temp03 = 300
+        temp3 = 600
+        deltaT3 = 10
+        inner_count3 = 3
+        
+        temp04 = 300
+        temp4 = 400
+        deltaT4 = 10
+        inner_count4 = 3
+        
+        
+        
+        
+        
+        for i in range(500):
+            self.data = Data()
+            best = self.search(temp0=temp01,temp=temp1,r=0.97,deltaT=deltaT1,isDelta=True,inner_count=inner_count1)
+            save.save(i,temp01,temp1,deltaT1,inner_count1,best)
+            best = self.search(temp0=temp02,temp=temp2,r=0.97,deltaT=deltaT2,isDelta=True,inner_count=inner_count2)
+            save.save(i,temp02,temp2,deltaT2,inner_count2,best)
+            best = self.search(temp0=temp03,temp=temp3,r=0.97,deltaT=deltaT3,isDelta=True,inner_count=inner_count3)
+            save.save(i,temp03,temp3,deltaT3,inner_count3,best)
+            best = self.search(temp0=temp04,temp=temp4,r=0.97,deltaT=deltaT4,isDelta=True,inner_count=inner_count4)
+            save.save(i,temp04,temp4,deltaT4,inner_count4,best)
+            del self.data
+            
+            
+        save.write_data()
+            
+            
 
                 
             
