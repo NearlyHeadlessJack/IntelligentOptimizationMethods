@@ -1,11 +1,7 @@
 """
 保存文件类
 """
-
-
 class SaveData:
-    
-    
     def __init__(self) :
         self.exp_index = []
         self.exp_temp0 = []
@@ -25,9 +21,7 @@ class SaveData:
         
         
         
-    def write_data(self):
-
-            
+    def write_data(self):     
         with open(file = 'index.txt',mode = 'w+')as f:
             for exp in self.exp_index:
                 f.writelines(str(exp)+'\n') 
